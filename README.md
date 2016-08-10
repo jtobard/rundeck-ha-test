@@ -12,7 +12,11 @@ The test will check the platform starts OK, then will kill the primary node, and
 
 ##TO RUN:
 
-just run: `./run.sh`
+	# define base URL for downloading rundeck pro artifacts
+	export ARTIFACTS_BASE=http://...
+	# define artifact version to use
+	export RUNDECK_VERS=1.3.9-SNAPSHOT
+	./run.sh
 
 ##Other Commands:
 

@@ -33,6 +33,7 @@ RUN \
 
 ## RUNDECK setup env
 ARG RUNDECK_BUNDLE=rundeckpro
+ARG INSTALLER_URL
 
 ENV USERNAME=rundeck \
     USER=rundeck \
@@ -61,11 +62,13 @@ COPY rundeckpro-installer $HOME/rundeckpro-installer
 
 # TODO set version as parameter
 WORKDIR $HOME/rundeckpro-installer
-RUN sed -i.bak -e "s|securerandom.source=file:/dev/random|securerandom.source=file:/dev/urandom|" /usr/lib/jvm/java-8-oracle/jre/lib/security/java.security && \
-    sed -i.bak -e "s|^RUNDECK_APPNAME=.*|RUNDECK_APPNAME=$RUNDECK_BUNDLE|" metadata && \
-    ./build.sh --notests --bundle && \
-    mv -fv rdpro-installer $HOME/rdpro-installer && \
-    rm -rf /tmp/it_* /tmp/rdpro* /tmp/RDECK*
+RUN sed -i.bak -e "s|securerandom.source=file:/dev/random|securerandom.source=file:/dev/urandom|" /usr/lib/jvm/java-8-oracle/jre/lib/security/java.security
+
+#download installer
+RUN echo "download installer: ${INSTALLER_URL}"
+RUN curl -sS -f -L -o $HOME/rdpro-installer ${INSTALLER_URL}
+RUN sudo chmod +x $HOME/rdpro-installer
+RUN rm -rf /tmp/it_* /tmp/rdpro* /tmp/RDECK*
 
 # RUNDECK - install
 RUN chown -R $USERNAME:$USERNAME $HOME

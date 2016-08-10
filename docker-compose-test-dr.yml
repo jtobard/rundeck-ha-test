@@ -20,6 +20,7 @@ services:
       context: dockers/rundeck/
       args:
         RUNDECK_BUNDLE: ${RUNDECK_BUNDLE}
+        INSTALLER_URL: ${INSTALLER_URL}
 #    links:
 #      - mysql
 #    entrypoint: bash /home/rundeck/run.sh
@@ -51,6 +52,7 @@ services:
       context: dockers/rundeck/
       args:
         RUNDECK_BUNDLE: ${RUNDECK_BUNDLE}
+        INSTALLER_URL: ${INSTALLER_URL}
 #    links:
 #      - mysql
 #    entrypoint: bash /home/rundeck/run.sh

@@ -5,6 +5,8 @@ export DOCKER_COMPOSE_SPEC=docker-compose-test-dr.yml
 #Bundle to use on this test.
 export RUNDECK_BUNDLE=rundeckpro-dr
 
+export INSTALLER_URL=$ARTIFACTS_BASE/rdpro-dr-installer-$RUNDECK_VERS
+
 set -e
 
 # tickle installer for it to rebuild

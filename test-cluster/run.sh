@@ -5,6 +5,8 @@ export DOCKER_COMPOSE_SPEC=docker-compose-test-cluster.yml
 #Bundle to use on this test.
 export RUNDECK_BUNDLE=rundeckpro-cluster
 
+export INSTALLER_URL=$ARTIFACTS_BASE/rdpro-cluster-installer-$RUNDECK_VERS
+
 set -e
 
 # tickle installer for it to rebuild
@@ -17,7 +19,6 @@ docker-compose -f $DOCKER_COMPOSE_SPEC down --volumes --remove-orphans
 docker-compose -f $DOCKER_COMPOSE_SPEC build
 
 # run docker
-#docker-compose -f $DOCKER_COMPOSE_SPEC up
 docker-compose -f $DOCKER_COMPOSE_SPEC up -d
 
 # Wait a little to start tests

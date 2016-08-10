@@ -1,8 +1,5 @@
 FROM ubuntu:16.04
 
-## http://stackoverflow.com/questions/20635472/using-the-run-instruction-in-a-dockerfile-with-source-does-not-work
-#RUN rm /bin/sh && ln -s /bin/bash /bin/sh
-
 # (Temporary) Change apt repository
 #RUN sed -i.bak -e "s:archive.ubuntu.com:ftp.tecnoera.com:g" /etc/apt/sources.list
 
@@ -19,7 +16,8 @@ RUN apt-get -y update && \
         debconf-utils \
         uuid-runtime \
         ncurses-bin \
-        iputils-ping
+        iputils-ping \
+        zip
 
 ## Install Oracle JVM
 RUN \
@@ -31,47 +29,49 @@ RUN \
 ## DEBUG ENV VARS AT THIS POINT
 #RUN echo "**** ENV VARS START ****" && printenv > /env_at_build_time && cat /env_at_build_time && echo "**** ENV VARS END ****"
 
-# SSH SERVER
-#RUN apt-get install -yqq openssh-server
-#RUN mkdir -p /var/run/sshd
-
-# SUPERVISOR
-#RUN apt-get -yqq install supervisor
-#COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
 # RUNDECK
 
 ## RUNDECK setup env
+ARG RUNDECK_BUNDLE=rundeckpro
+ARG INSTALLER_URL
+
 ENV USERNAME=rundeck \
-    HOME=/home/rundeck
+    USER=rundeck \
+    HOME=/home/rundeck \
+    LOGNAME=$USERNAME \
+    TERM=xterm-256color
 
 # RUNDECK - create user
 RUN adduser --shell /bin/bash --home $HOME --gecos "" --disabled-password $USERNAME && \
     passwd -d $USERNAME && \
     addgroup $USERNAME sudo
 
-COPY rundeckpro-installer $HOME/rundeckpro-installer
-RUN chown -R $USERNAME:$USERNAME $HOME
-
-# RUNDECK - building installer
-ENV LOGNAME=$USERNAME TERM=xterm-256color
-WORKDIR $HOME/rundeckpro-installer
-RUN sed -i.bak -e "s|securerandom.source=file:/dev/random|securerandom.source=file:/dev/urandom|" /usr/lib/jvm/java-8-oracle/jre/lib/security/java.security && \
-    ./build.sh --notests --bundle && \
-    mv -fv rdpro-installer $HOME/rdpro-installer && \
-    rm -rf /tmp/it_* /tmp/rdpro* /tmp/RDECK*
-
 # Build Rerun utilities
 WORKDIR $HOME
 RUN git clone https://github.com/rerun/rerun $HOME/rerun && \
     git clone https://github.com/rerun-modules/rundeck-apitokens $HOME/rerun/modules/rundeck-apitokens && \
-    git clone https://github.com/rerun-modules/rundeck-system $HOME/rerun/modules/rundeck-system
+    git clone https://github.com/rerun-modules/rundeck-system $HOME/rerun/modules/rundeck-system && \
+    git clone https://github.com/rerun-modules/rundeck-plugin $HOME/rerun/modules/rundeck-plugin
 
 WORKDIR $HOME/rerun
 RUN ./rerun stubbs:archive -f $HOME/rrtokens --modules rundeck-apitokens && \
     ./rerun stubbs:archive -f $HOME/rrsystem --modules rundeck-system
 
-# RUNDECK - installation
+# RUNDECK - building installer
+COPY rundeckpro-installer $HOME/rundeckpro-installer
+
+# TODO set version as parameter
+WORKDIR $HOME/rundeckpro-installer
+RUN sed -i.bak -e "s|securerandom.source=file:/dev/random|securerandom.source=file:/dev/urandom|" /usr/lib/jvm/java-8-oracle/jre/lib/security/java.security
+
+#download installer
+RUN echo "download installer: ${INSTALLER_URL}"
+RUN curl -sS -f -L -o $HOME/rdpro-installer ${INSTALLER_URL}
+RUN sudo chmod +x $HOME/rdpro-installer
+RUN rm -rf /tmp/it_* /tmp/rdpro* /tmp/RDECK*
+
+# RUNDECK - install
+RUN chown -R $USERNAME:$USERNAME $HOME
 WORKDIR $HOME
 USER rundeck
 
@@ -83,11 +83,6 @@ RUN ./rdpro-installer install-all \
       --keystore-file $HOME/etc/truststore \
       --keystore-pass rundeck \
       --keystore-dname 'CN=acme.org,OU=CA,O=ACME,L=Acme,S=Acme,C=US' \
-#      --datasource-driver com.mysql.jdbc.Driver \
-#      --datasource-url 'jdbc:mysql://mysql/rundeck?autoReconnect=true' \
-#      --datasource-username rundeck \
-#      --datasource-password rundeck
-
 
 RUN ./rdpro-installer configure-clustermode \
   --enabled true \
@@ -99,15 +94,13 @@ RUN ./rdpro-installer configure-logs-dir \
 
 EXPOSE 22 3000 4440 4443
 
-# Copy and run entry command.
-COPY scripts/run.sh $HOME/run.sh
-COPY scripts/xmls $HOME/xmls
-RUN sudo chmod +x $HOME/run.sh
+# Copy files.
+COPY config $HOME/config
+COPY scripts $HOME/scripts
+RUN sudo chmod -R a+x $HOME/scripts/*
 
 VOLUME $HOME
 
 # Start the instance.
-CMD ./run.sh
+CMD scripts/run.sh
 
-#USER root
-#ENTRYPOINT ["/usr/bin/supervisord"]

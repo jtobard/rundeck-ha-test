@@ -57,11 +57,7 @@ WORKDIR $HOME/rerun
 RUN ./rerun stubbs:archive -f $HOME/rrtokens --modules rundeck-apitokens && \
     ./rerun stubbs:archive -f $HOME/rrsystem --modules rundeck-system
 
-# RUNDECK - building installer
-COPY rundeckpro-installer $HOME/rundeckpro-installer
 
-# TODO set version as parameter
-WORKDIR $HOME/rundeckpro-installer
 RUN sed -i.bak -e "s|securerandom.source=file:/dev/random|securerandom.source=file:/dev/urandom|" /usr/lib/jvm/java-8-oracle/jre/lib/security/java.security
 
 #download installer

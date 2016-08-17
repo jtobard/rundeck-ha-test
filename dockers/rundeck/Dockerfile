@@ -33,6 +33,7 @@ RUN \
 
 ## RUNDECK setup env
 ARG RUNDECK_BUNDLE=rundeckpro
+ARG WEBAPP_CONTEXT=rundeckpro
 ARG INSTALLER_URL
 
 ENV USERNAME=rundeck \

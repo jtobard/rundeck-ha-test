@@ -16,7 +16,7 @@ sleep 3;
 
 # Trigger active mode on passive node.
 echo "Setting node2 to active mode."
-docker-compose -f $DOCKER_COMPOSE_SPEC exec -T --user rundeck rundeck2 ./rrsystem rundeck-system:set-execution-mode --execution-mode active --url http://rundeck2:4440/$RUNDECK_BUNDLE --username admin --password admin
+docker-compose -f $DOCKER_COMPOSE_SPEC exec -T --user rundeck rundeck2 ./rrsystem rundeck-system:set-execution-mode --execution-mode active --url http://rundeck2:4440/$WEBAPP_CONTEXT --username admin --password admin
 sleep 3;
 
 #Run stage 2

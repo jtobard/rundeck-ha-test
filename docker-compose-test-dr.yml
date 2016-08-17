@@ -20,6 +20,7 @@ services:
       context: dockers/rundeck/
       args:
         RUNDECK_BUNDLE: ${RUNDECK_BUNDLE}
+        WEBAPP_CONTEXT: ${WEBAPP_CONTEXT}
         INSTALLER_URL: ${INSTALLER_URL}
 #    links:
 #      - mysql
@@ -27,7 +28,7 @@ services:
     environment:
       - RUNDECK_NODE=rundeck1
       - RUNDECK_ROLE=active
-      - RUNDECK_URL=http://rundeck1:4440/${RUNDECK_BUNDLE}
+      - RUNDECK_URL=http://rundeck1:4440/${WEBAPP_CONTEXT}
       - RUNDECK_ROOT=${RUNDECK_BUNDLE}
       - CONFIG_SCRIPT_PRESTART=scripts/test-dr/config-test-pre.sh
       - CONFIG_SCRIPT_POSTSTART=scripts/test-dr/config-test-post.sh
@@ -52,6 +53,7 @@ services:
       context: dockers/rundeck/
       args:
         RUNDECK_BUNDLE: ${RUNDECK_BUNDLE}
+        WEBAPP_CONTEXT: ${WEBAPP_CONTEXT}
         INSTALLER_URL: ${INSTALLER_URL}
 #    links:
 #      - mysql
@@ -59,7 +61,7 @@ services:
     environment:
       - RUNDECK_NODE=rundeck2
       - RUNDECK_ROLE=passive
-      - RUNDECK_URL=http://rundeck2:4440/${RUNDECK_BUNDLE}
+      - RUNDECK_URL=http://rundeck2:4440/${WEBAPP_CONTEXT}
       - RUNDECK_ROOT=${RUNDECK_BUNDLE}
       - CONFIG_SCRIPT_PRESTART=scripts/test-dr/config-test-pre.sh
       - CONFIG_SCRIPT_POSTSTART=scripts/test-dr/config-test-post.sh

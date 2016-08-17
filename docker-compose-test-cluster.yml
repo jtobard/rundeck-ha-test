@@ -20,6 +20,7 @@ services:
       context: dockers/rundeck/
       args:
         RUNDECK_BUNDLE: ${RUNDECK_BUNDLE}
+        WEBAPP_CONTEXT: ${WEBAPP_CONTEXT}
         INSTALLER_URL: ${INSTALLER_URL}
     links:
       - mysql
@@ -28,7 +29,7 @@ services:
       - CONFIG_SCRIPT_PRESTART=scripts/test-cluster/config-test-pre.sh
       - CONFIG_SCRIPT_POSTSTART=scripts/test-cluster/config-test-post.sh
       - RUNDECK_NODE=rundeck1
-      - RUNDECK_URL=http://rundeck1:4440/${RUNDECK_BUNDLE}
+      - RUNDECK_URL=http://rundeck1:4440/${WEBAPP_CONTEXT}
       - RUNDECK_ROOT=${RUNDECK_BUNDLE}
       - RUNDECK_UUID=01010101-0000-0000-0000-111111111111
       - RUNDECK_ROLE=leader
@@ -55,6 +56,7 @@ services:
       context: dockers/rundeck/
       args:
         RUNDECK_BUNDLE: ${RUNDECK_BUNDLE}
+        WEBAPP_CONTEXT: ${WEBAPP_CONTEXT}
         INSTALLER_URL: ${INSTALLER_URL}
     links:
       - mysql
@@ -62,7 +64,7 @@ services:
       - CONFIG_SCRIPT_PRESTART=scripts/test-cluster/config-test-pre.sh
       - CONFIG_SCRIPT_POSTSTART=scripts/test-cluster/config-test-post.sh
       - RUNDECK_NODE=rundeck2
-      - RUNDECK_URL=http://rundeck2:4440/${RUNDECK_BUNDLE}
+      - RUNDECK_URL=http://rundeck2:4440/${WEBAPP_CONTEXT}
       - RUNDECK_ROOT=${RUNDECK_BUNDLE}
       - RUNDECK_UUID=02020202-0000-0000-0000-222222222222
       - RUNDECK_ROLE=member

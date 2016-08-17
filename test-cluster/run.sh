@@ -4,6 +4,7 @@ export DOCKER_COMPOSE_SPEC=docker-compose-test-cluster.yml
 
 #Bundle to use on this test.
 export RUNDECK_BUNDLE=rundeckpro-cluster
+export WEBAPP_CONTEXT=rundeckpro
 
 export INSTALLER_URL=$ARTIFACTS_BASE/rdpro-cluster-installer-$RUNDECK_VERS
 

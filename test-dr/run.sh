@@ -6,7 +6,14 @@ export DOCKER_COMPOSE_SPEC=docker-compose-test-dr.yml
 export RUNDECK_BUNDLE=rundeckpro-dr
 export WEBAPP_CONTEXT=rundeckpro
 
-export INSTALLER_URL=$ARTIFACTS_BASE/rdpro-dr-installer-$RUNDECK_VERS
+export INSTALLER_URL=$ARTIFACTS_BASE/rdpro-dr-installer-${RUNDECK_VERS}
+
+if [[ $RUNDECK_VERS =~ "-SNAPSHOT" ]] ; then
+	#prevent docker build from using cached version of snapshot installer 
+	ts=$(date +"%s")
+	export INSTALLER_URL="${INSTALLER_URL}?t=$ts"
+	echo "use snapshot INSTALLER_URL $INSTALLER_URL"
+fi
 
 set -e
 

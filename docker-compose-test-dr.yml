@@ -29,7 +29,7 @@ services:
       - RUNDECK_NODE=rundeck1
       - RUNDECK_ROLE=active
       - RUNDECK_URL=http://rundeck1:4440/${WEBAPP_CONTEXT}
-      - RUNDECK_ROOT=${RUNDECK_BUNDLE}
+      - RUNDECK_ROOT=${WEBAPP_CONTEXT}
       - CONFIG_SCRIPT_PRESTART=scripts/test-dr/config-test-pre.sh
       - CONFIG_SCRIPT_POSTSTART=scripts/test-dr/config-test-post.sh
 #      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
@@ -62,7 +62,7 @@ services:
       - RUNDECK_NODE=rundeck2
       - RUNDECK_ROLE=passive
       - RUNDECK_URL=http://rundeck2:4440/${WEBAPP_CONTEXT}
-      - RUNDECK_ROOT=${RUNDECK_BUNDLE}
+      - RUNDECK_ROOT=${WEBAPP_CONTEXT}
       - CONFIG_SCRIPT_PRESTART=scripts/test-dr/config-test-pre.sh
       - CONFIG_SCRIPT_POSTSTART=scripts/test-dr/config-test-post.sh
 #      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
@@ -108,7 +108,7 @@ services:
       - rundeck2
     environment:
       - RUNDECK_NODE=rundecktest
-      - RUNDECK_ROOT=${RUNDECK_BUNDLE}
+      - RUNDECK_ROOT=${WEBAPP_CONTEXT}
     volumes:
       - testdata:/home/rundeck/testdata:rw
     networks:

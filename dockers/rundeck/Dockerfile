@@ -79,7 +79,7 @@ RUN ./rdpro-installer install-all \
       --keystore-generate true \
       --keystore-file $HOME/etc/truststore \
       --keystore-pass rundeck \
-      --keystore-dname 'CN=acme.org,OU=CA,O=ACME,L=Acme,S=Acme,C=US' \
+      --keystore-dname 'CN=acme.org,OU=CA,O=ACME,L=Acme,S=Acme,C=US'
 
 RUN ./rdpro-installer configure-clustermode \
   --enabled true \
